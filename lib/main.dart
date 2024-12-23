@@ -6,7 +6,7 @@ import 'package:world_time/pages/choose_location.dart';
 void main() {
   runApp(MaterialApp(
       theme: ThemeData(useMaterial3: false),
-      initialRoute: '/home', // Initial or first screen
+      initialRoute: '/', // Initial or first screen
       routes: {
         '/': (context) => const Loading(),
         '/home': (context) => const Home(),
