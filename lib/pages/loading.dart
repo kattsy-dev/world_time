@@ -36,18 +36,31 @@ class _LoadingState extends State<Loading> {
   //   print("$username - $bio");
   // }
 
-  void getData() async {
-    http.Response response = await http
-        .get(Uri.parse('https://jsonplaceholder.typicode.com/todos/1'));
+  void getTime() async {
+    // make the request
+    http.Response response = await http.get(
+        Uri.parse('https://www.worldtimeapi.org/api/timezone/Europe/London'));
     Map data = jsonDecode(response.body);
     print(data);
-    print(data['title']);
+    // Get propertie from data
+
+    String dateTime = data['datetime'];
+    String offSet = data['utc_offset'].substring(1, 3);
+    // print("");
+    // print(dateTime);
+    // print(offSet);
+
+    // Create Dae Time object
+    DateTime now = DateTime.parse(dateTime);
+    now = now.add(Duration(hours: int.parse(offSet)));
+    print("");
+    print(now);
   }
 
   @override
   void initState() {
     super.initState();
-    getData();
+    getTime();
   }
 
   @override
