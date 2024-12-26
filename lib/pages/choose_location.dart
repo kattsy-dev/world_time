@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:world_time/services/world_time.dart';
 
 class ChooseLocation extends StatefulWidget {
   const ChooseLocation({super.key});
@@ -8,25 +9,41 @@ class ChooseLocation extends StatefulWidget {
 }
 
 class _ChooseLocationState extends State<ChooseLocation> {
-  int counter = 0;
+  List<WorldTime> locations = [
+    WorldTime(url: 'Europe/London', location: 'London', flag: 'us.jpg'),
+    WorldTime(url: 'Europe/Berlin', location: 'Athens', flag: 'gojo.jpg'),
+    WorldTime(url: 'Asia/Philippines', location: 'Manila', flag: 'ph.png'),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey,
-        appBar: AppBar(
-          backgroundColor: Colors.blue,
-          title: const Text("Choose a Location"),
-          centerTitle: true,
-          elevation: 0,
-        ),
-        body: ElevatedButton(
-          onPressed: () {
-            setState(() {
-              counter += 1;
-            });
-          },
-          child: Text('Counter is $counter'),
-        ));
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: const Text("Choose a Location"),
+        centerTitle: true,
+        elevation: 0,
+      ),
+      body: ListView.builder(
+        itemCount: locations.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
+            child: Card(
+              child: ListTile(
+                onTap: () {
+                  print(locations[index].location);
+                },
+                title: Text(locations[index].location),
+                leading: CircleAvatar(
+                  backgroundImage: AssetImage('${locations[index].flag}'),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 
 class WorldTime {
-  String? location; // Location namr for the UI
+  String location; // Location namr for the UI
   String? time; // The time in that location
   String? flag; // URL to an asset flag icon
   String? url; // Location URL for API endpoint
   bool? isDaytime; // True or false if daytime or not
 
-  WorldTime({this.location, this.flag, this.url});
+  WorldTime({required this.location, this.flag, this.url});
   Future<void> getTime() async {
     try {
       // make the request
