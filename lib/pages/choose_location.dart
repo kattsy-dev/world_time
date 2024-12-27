@@ -17,15 +17,35 @@ class _ChooseLocationState extends State<ChooseLocation> {
 
   void updateTime(index) async {
     WorldTime instance = locations[index];
-    await instance.getTime();
 
-    // Navigate to home screen
-    Navigator.pop(context, {
-      'location': instance.location,
-      'flag': instance.flag,
-      'time': instance.time,
-      'isDaytime': instance.isDaytime,
-    });
+    // Show a loading spinner while fetching data
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    try {
+      await instance.getTime();
+
+      // Navigate back with data
+      Navigator.pop(context); // Dismiss loading spinner
+      Navigator.pop(context, {
+        'location': instance.location,
+        'flag': instance.flag,
+        'time': instance.time,
+        'isDaytime': instance.isDaytime,
+      });
+    } catch (e) {
+      Navigator.pop(context); // Dismiss loading spinner
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch time: $e')),
+      );
+    }
   }
 
   @override
@@ -35,6 +55,12 @@ class _ChooseLocationState extends State<ChooseLocation> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: const Text("Choose a Location"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         centerTitle: true,
         elevation: 0,
       ),
@@ -44,12 +70,13 @@ class _ChooseLocationState extends State<ChooseLocation> {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
             child: Card(
+              elevation: 2,
               child: ListTile(
-                onTap: () {
-                  // print(locations[index].location);
-                  updateTime(index);
-                },
-                title: Text(locations[index].location),
+                onTap: () => updateTime(index),
+                title: Text(
+                  locations[index].location,
+                  style: const TextStyle(fontSize: 18),
+                ),
                 leading: CircleAvatar(
                   backgroundImage: AssetImage('${locations[index].flag}'),
                 ),

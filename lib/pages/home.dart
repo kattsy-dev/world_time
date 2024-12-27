@@ -14,14 +14,13 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     // Retrieve arguments passed through the route
-    // data = (ModalRoute.of(context)?.settings.arguments as Map?) ?? {};
     data = data.isNotEmpty
         ? data
         : (ModalRoute.of(context)?.settings.arguments as Map?) ?? {};
 
     // Set Background
     bool isDaytime = data['isDaytime'] ?? true;
-    String bgImage = isDaytime ? 'day.jpg' : 'night.jpg';
+    String bgImage = isDaytime ? 'night.jpg' : 'day.jpg';
 
     return Scaffold(
         body: SafeArea(
@@ -33,7 +32,7 @@ class _HomeState extends State<Home> {
       )),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: data!.isNotEmpty
+        child: data.isNotEmpty
             ? Column(
                 mainAxisAlignment:
                     MainAxisAlignment.center, // Center the content
@@ -42,14 +41,17 @@ class _HomeState extends State<Home> {
                     onPressed: () async {
                       dynamic result =
                           await Navigator.pushNamed(context, '/location');
-                      setState(() {
-                        data = {
-                          'location': result['location'],
-                          'flag': result['flag'],
-                          'time': result['time'],
-                          'isDaytime': result['isDaytime'],
-                        };
-                      });
+
+                      if (result != null && result is Map) {
+                        setState(() {
+                          data = {
+                            'location': result['location'] ?? 'Unknown',
+                            'flag': result['flag'] ?? '',
+                            'time': result['time'] ?? 'N/A',
+                            'isDaytime': result['isDaytime'] ?? true,
+                          };
+                        });
+                      }
                     },
                     icon: const Icon(
                       Icons.edit_location,
@@ -68,7 +70,7 @@ class _HomeState extends State<Home> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(data!['location'] ?? 'No Location Found',
+                      Text(data['location'] ?? 'No Location Found',
                           style: const TextStyle(
                             fontSize: 28.0,
                             letterSpacing: 2,
@@ -80,7 +82,7 @@ class _HomeState extends State<Home> {
                     height: 20.0,
                   ),
                   Text(
-                    data!['time'] ?? 'No Location Found',
+                    data['time'] ?? 'No Location Found',
                     style: const TextStyle(fontSize: 66.0, color: Colors.white),
                   ),
                 ],
@@ -88,6 +90,5 @@ class _HomeState extends State<Home> {
             : const Center(child: Loading()),
       ),
     )));
-    //body: Text("Home Screen"),
   }
 }
