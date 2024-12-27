@@ -9,16 +9,18 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Map? data;
+  Map data = {};
 
   @override
   Widget build(BuildContext context) {
     // Retrieve arguments passed through the route
-    data = ModalRoute.of(context)?.settings.arguments as Map? ?? {};
-    print(data);
+    // data = (ModalRoute.of(context)?.settings.arguments as Map?) ?? {};
+    data = data.isNotEmpty
+        ? data
+        : (ModalRoute.of(context)?.settings.arguments as Map?) ?? {};
 
     // Set Background
-    bool isDaytime = data?['isDaytime'] ?? true;
+    bool isDaytime = data['isDaytime'] ?? true;
     String bgImage = isDaytime ? 'day.jpg' : 'night.jpg';
 
     return Scaffold(
@@ -37,8 +39,17 @@ class _HomeState extends State<Home> {
                     MainAxisAlignment.center, // Center the content
                 children: [
                   TextButton.icon(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/location');
+                    onPressed: () async {
+                      dynamic result =
+                          await Navigator.pushNamed(context, '/location');
+                      setState(() {
+                        data = {
+                          'location': result['location'],
+                          'flag': result['flag'],
+                          'time': result['time'],
+                          'isDaytime': result['isDaytime'],
+                        };
+                      });
                     },
                     icon: const Icon(
                       Icons.edit_location,
